@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Task } from './task';
+import {Component} from '@angular/core';
+import {Task} from './task';
 
 
 @Component({
@@ -9,7 +9,7 @@ import { Task } from './task';
 })
 export class AppComponent {
   editMode = false;
-  config: { [key: string]: string } | null  = null;
+  config: { [key: string]: string } | null = null;
   taskName = 'Sugerowane zadanie';
   taskData = '';
   tasks: Task[] = [
@@ -21,7 +21,7 @@ export class AppComponent {
     {
       name: 'Nauka Angulara',
       deadline: '2020-01-03',
-      done: false,
+      done: true,
     },
     {
       name: 'Sprzątanie kuwety',
@@ -31,11 +31,12 @@ export class AppComponent {
   ];
 
   constructor() {
-      this.config = {
-        title: 'Lista zadań',
-        footer: '© Lista zadań zbudowana w Angularze.',
-        date: new Date().toDateString(),
-      };
+    this.config = {
+      title: 'Lista zadań',
+      footer: '© Lista zadań zbudowana w Angularze.',
+      date: new Date().toDateString(),
+    };
+    this.sortTask();
   }
 
   clearTasks() {
@@ -44,18 +45,32 @@ export class AppComponent {
   }
 
   createTask() {
-    const task:Task = {
-      name:this.taskName,
+    const task: Task = {
+      name: this.taskName,
       deadline: this.taskData,
       done: false,
     }
     this.tasks.push(task)
     this.taskName = '';
     this.taskData = '';
+    this.sortTask();
   }
 
   switchEditMode() {
     this.editMode = !this.editMode;
   }
 
+  markTaskAsDone(task: Task) {
+    task.done = true;
+    this.sortTask();
+  }
+
+  deleteTask(task: Task) {
+    this.tasks = this.tasks.filter(e => e !== task);
+    this.sortTask();
+  }
+
+  private sortTask() {
+    this.tasks = this.tasks.sort((a: Task, b: Task) => a.done === b.done ? 0 : a.done ? 1 : -1)
+  }
 }
